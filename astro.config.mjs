@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://dna-hair.tw',
+  site: 'https://dna-hair-cut-web.vercel.app',
   integrations: [vue(), sitemap()],
 
   vite: {
