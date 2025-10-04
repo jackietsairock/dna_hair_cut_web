@@ -1,0 +1,529 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import TestimonialsCarousel from '../components/TestimonialsCarousel.vue';
+
+const pageTitle = 'DNA優質專業剪髮(淡水店)｜淡水髮廊首選';
+const pageDescription =
+  '淡水捷運站旁的 DNA 優質專業剪髮，提供剪髮、染髮、頭皮養護與婚禮造型，打造兼具質感與維持性的客製化造型。';
+
+const siteOrigin = Astro.site ?? new URL('https://dna-hair.tw');
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin);
+const openGraphImage =
+  '/S__14778386.jpg';
+const keywords = [
+  'DNA優質專業剪髮(淡水店)',
+  '淡水剪髮',
+  '淡水染髮推薦',
+  '淡水頭皮養護',
+  '淡水髮型設計師',
+  '新北髮廊推薦'
+];
+
+const highlights = [
+  {
+    title: '淡水正德國中旁',
+    description: '位於淡水正德國中旁。',
+    icon: 'M4 7h16M4 12h16M4 17h16'
+  },
+  {
+    title: '專業設計團隊',
+    description: '擁有專業資深設計師。',
+    icon: 'M12 3v18M5 9l7-6 7 6M5 15l7 6 7-6'
+  },
+  {
+    title: '專業洗剪',
+    description: '平價又優質的洗剪服務。',
+    icon: 'M5 13l4 4L19 7'
+  }
+];
+
+const services = [
+  {
+    name: '質感剪髮設計',
+    price: 'NT$800 起',
+    duration: '60 分鐘',
+    description:
+      '以頭型骨架與五官比例做立體剪裁，維持 45 天仍然好整理。',
+    tags: ['骨架調整剪髮', '男士潮流剪髮', '孩童剪髮']
+  },
+  {
+    name: '光影手刷染',
+    price: 'NT$3,200 起',
+    duration: '150 分鐘',
+    description:
+      '多層次手刷技法打造自然漸層光澤，適合在淡水陽光下襯托膚色。',
+    tags: ['霧感髮色', '頭皮隔離', 'Olaplex 髮膜']
+  },
+  {
+    name: '頭皮深層養護',
+    price: 'NT$1,800 起',
+    duration: '75 分鐘',
+    description:
+      '結合高頻純氧與精油舒壓，改善換季敏感與出油，重拾舒服頭皮。',
+    tags: ['頭皮檢測', '高頻潔淨', '肩頸舒緩']
+  }
+];
+
+const experienceHighlights = [
+  {
+    title: '專屬諮詢區',
+    copy: '從生活作息到髮質分析，10 分鐘深入溝通，打造可日常維護的髮型。'
+  },
+  {
+    title: '日系洗髮劇場',
+    copy: '躺臥式按摩椅搭配芳療香氣，給頭皮與心靈一場放鬆之旅。'
+  },
+  {
+    title: '淡水限定造型',
+    copy: '針對濕熱海風設計防毛躁造型與保色方案，讓髮型在海岸線也維持完美。'
+  }
+];
+
+const testimonials = [
+  {
+    name: '蔡政憲',
+    role: '媒體業 工程師',
+    quote:
+      '設計師非常熱情，而且很細心地了解我的需求，這裡平價CP值又高，真是愛理平頭的最佳聖地！',
+    service: '洗＋剪',
+    visitDate: '2025-10-4',
+    rating: 5
+  }
+];
+
+const faqs = [
+  {
+    question: '需要事先預約嗎？',
+    answer: '建議提前預約以保留喜歡的設計師時段，現場也提供候位服務。可透過電話或 LINE 官方帳號預約。'
+  },
+  {
+    question: '店內有提供英文服務嗎？',
+    answer: '部分設計師可使用英文與日文溝通，預約時告知需求即可安排。'
+  },
+  {
+    question: '停車是否方便？',
+    answer: '可停放於淡水捷運站停車場與淡水文化園區地下停車場，步行皆在 5 分鐘內。'
+  }
+];
+
+const parsePrice = (value: string) => {
+  const numeric = value.replace(/[^0-9]/g, '');
+  return numeric ? Number.parseInt(numeric, 10) : undefined;
+};
+
+const serviceSchemas = services.map((service) => {
+  const priceValue = parsePrice(service.price);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${canonicalUrl.href}#service-${encodeURIComponent(service.name)}`,
+    name: service.name,
+    description: service.description,
+    serviceType: service.name,
+    provider: {
+      '@type': 'HairSalon',
+      '@id': `${canonicalUrl.href}#business`,
+      name: 'DNA優質專業剪髮(淡水店)'
+    },
+    areaServed: {
+      '@type': 'AdministrativeArea',
+      name: '新北市淡水區'
+    },
+    ...(priceValue && {
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'TWD',
+        price: priceValue,
+        availability: 'https://schema.org/InStock'
+      }
+    })
+  };
+});
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: '首頁',
+      item: siteOrigin.href
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'DNA優質專業剪髮(淡水店)',
+      item: canonicalUrl.href
+    }
+  ]
+};
+
+const businessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HairSalon',
+  '@id': `${canonicalUrl.href}#business`,
+  name: 'DNA優質專業剪髮(淡水店)',
+  image: [openGraphImage],
+  url: canonicalUrl.href,
+  mainEntityOfPage: canonicalUrl.href,
+  telephone: '+886-2-2635-1234',
+  priceRange: '$$',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '中正路 35 號 2F',
+    addressLocality: '淡水區',
+    addressRegion: '新北市',
+    postalCode: '251',
+    addressCountry: 'TW'
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 25.1695,
+    longitude: 121.4451
+  },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+      opens: '11:00',
+      closes: '20:30'
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Friday', 'Saturday'],
+      opens: '10:30',
+      closes: '21:00'
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: 'Sunday',
+      opens: '11:00',
+      closes: '19:00'
+    }
+  ],
+  sameAs: [
+    'https://www.facebook.com/',
+    'https://www.instagram.com/'
+  ],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.8',
+    reviewCount: '120'
+  },
+  paymentAccepted: ['Cash', 'Credit Card', 'Line Pay', 'Apple Pay'],
+  areaServed: {
+    '@type': 'AdministrativeArea',
+    name: '新北市淡水區'
+  },
+  hasMap: 'https://www.google.com/maps?q=25.169505434897367,121.4451',
+  makesOffer: services.map((service) => ({
+    '@type': 'Offer',
+    itemOffered: {
+      '@type': 'Service',
+      name: service.name
+    }
+  })),
+  potentialAction: {
+    '@type': 'ReserveAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://line.me/ti/p/'
+    },
+    result: {
+      '@type': 'Reservation',
+      name: 'DNA 優質專業剪髮預約'
+    }
+  }
+};
+
+const openGraph = {
+  type: 'business.business',
+  locale: 'zh_TW',
+  siteName: 'DNA優質專業剪髮(淡水店)',
+  title: pageTitle,
+  description: pageDescription,
+  url: canonicalUrl.href,
+  image: openGraphImage,
+  imageAlt: 'DNA優質專業剪髮店內造型照',
+  imageWidth: 1200,
+  imageHeight: 630,
+  updatedTime: new Date().toISOString(),
+  themeColor: '#1d235a'
+};
+
+const twitter = {
+  card: 'summary_large_image',
+  title: pageTitle,
+  description: pageDescription,
+  image: openGraphImage,
+  imageAlt: 'DNA優質專業剪髮店內造型照',
+  url: canonicalUrl.href
+};
+
+const schema = [businessSchema, faqSchema, ...serviceSchemas, breadcrumbSchema];
+---
+<MainLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalUrl.href}
+  keywords={keywords}
+  schema={schema}
+  openGraph={openGraph}
+  twitter={twitter}
+>
+  <div class="relative isolate overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 -z-10 opacity-90">
+      <div class="absolute inset-x-0 top-[-32rem] -z-10 h-[42rem] bg-gradient-to-br from-brand-500/40 via-slate-900/0 to-slate-950 blur-3xl" />
+      <div class="absolute inset-y-0 right-[-18rem] hidden h-[34rem] w-[34rem] rounded-full bg-gradient-to-br from-brand-400/40 to-brand-600/10 blur-3xl lg:block" />
+    </div>
+
+    <header class="section-padding pb-10 pt-28 md:pt-32">
+      <div class="mx-auto flex max-w-6xl flex-col items-start gap-10 md:flex-row md:items-center md:justify-between">
+        <div class="max-w-2xl space-y-6">
+          <!-- <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1 text-sm text-brand-100 ring-1 ring-white/20">
+            <span class="h-2 w-2 rounded-full bg-emerald-400" />
+            2025 秋冬造型預約開放中
+          </span> -->
+          <h1 class="text-4xl font-semibold leading-tight text-white md:text-5xl lg:text-6xl">
+            DNA優質專業剪髮<br>(淡水店)
+            <span class="block text-2xl font-normal text-slate-200 md:text-3xl">
+              <br>在淡水正德國中前，訂製你的質感日常
+            </span>
+          </h1>
+          <p class="text-lg leading-relaxed text-slate-300 md:text-xl">
+            我們為淡水在地與旅人打造個性、耐看又好整理的髮型體驗。
+          </p>
+          <div class="flex flex-wrap gap-4 text-sm font-medium text-white">
+            <!-- <a
+              class="inline-flex items-center gap-2 rounded-full bg-brand-500 px-6 py-3 shadow-lg shadow-brand-900/40 transition hover:bg-brand-400"
+              href="tel:+886226351234"
+            >
+              預約專線
+              <span class="text-brand-100">(02) 2635-1234</span>
+            </a> -->
+            <!-- <a
+              class="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-slate-200 transition hover:border-brand-400 hover:text-white"
+              href="https://line.me/ti/p/" target="_blank" rel="noreferrer"
+            >
+              LINE 線上諮詢
+            </a> -->
+          </div>
+        </div>
+        <div class="glass-panel relative mx-auto w-full max-w-md overflow-hidden rounded-3xl">
+          <img
+            src={openGraphImage}
+            alt="DNA優質專業剪髮店內造型"
+            class="h-[28rem] w-full object-cover brightness-[0.75]"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </header>
+
+    <section class="section-padding pt-0">
+      <div class="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
+        {highlights.map((highlight) => (
+          <article class="glass-panel flex flex-col gap-4 rounded-2xl p-6" key={highlight.title}>
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/20 text-brand-200">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-6 w-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d={highlight.icon}></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-white">{highlight.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-slate-300">{highlight.description}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section-padding">
+      <div class="mx-auto flex max-w-6xl flex-col gap-10 lg:flex-row lg:items-start">
+        <div class="max-w-xl space-y-5">
+          <p class="text-sm uppercase tracking-[0.3em] text-brand-200">About DNA</p>
+          <h2 class="text-3xl font-semibold text-white md:text-4xl">淡水的優質專業髮型基地</h2>
+          <p class="text-slate-300">
+            專注剪髮，熱情服務。
+          </p>
+          <dl class="grid gap-4 text-sm text-slate-200 sm:grid-cols-2">
+            <div>
+              <dt class="font-semibold text-white">地址｜Address</dt>
+              <dd>251新北市淡水區北新路98號</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-white">營業時間｜Hours</dt>
+              <dd>10:00 - 21:00</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-white">付款方式</dt>
+              <dd>現金</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-white">特色服務</dt>
+              <dd>專業優質剪髮</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="glass-panel w-full max-w-2xl rounded-3xl p-2 lg:sticky lg:top-24">
+          <iframe
+            class="h-[28rem] w-full rounded-[1.3rem] border border-white/10"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d595.5492280095946!2d121.44684444086316!3d25.178383643916657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442afff0c715ae5%3A0xe24cf2364b4f66b!2zMjUx5paw5YyX5biC5reh5rC05Y2A5YyX5paw6LevOTjomZ8!5e0!3m2!1szh-TW!2stw!4v1759568017844!5m2!1szh-TW!2stw"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="DNA優質專業剪髮 Google 地圖"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- <section class="section-padding bg-gradient-to-b from-slate-950 via-slate-900/60 to-slate-950">
+      <div class="mx-auto max-w-6xl">
+        <div class="flex flex-col items-center gap-6 text-center">
+          <p class="text-sm uppercase tracking-[0.3em] text-brand-200">Signature Services</p>
+          <h2 class="text-3xl font-semibold text-white md:text-4xl">明星療程與專業項目</h2>
+          <p class="max-w-2xl text-slate-300">
+            依據當季氣候設計專屬處方，從剪裁、染護到頭皮療程一次到位。首次到店可享免費頭皮檢測與造型教學。
+          </p>
+        </div>
+        <div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => (
+            <article class="glass-panel flex flex-col gap-4 rounded-3xl p-6 text-left" key={service.name}>
+              <header class="space-y-2">
+                <h3 class="text-2xl font-semibold text-white">{service.name}</h3>
+                <p class="text-brand-200">{service.price} · {service.duration}</p>
+              </header>
+              <p class="text-sm leading-relaxed text-slate-300">{service.description}</p>
+              <div class="flex flex-wrap gap-2">
+                {service.tags.map((tag) => (
+                  <span key={tag} class="rounded-full bg-brand-500/15 px-3 py-1 text-xs text-brand-100 ring-1 ring-brand-500/20">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section-padding">
+      <div class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2">
+        <div class="space-y-6">
+          <p class="text-sm uppercase tracking-[0.3em] text-brand-200">Experience</p>
+          <h2 class="text-3xl font-semibold text-white md:text-4xl">走進 DNA 的 3 個關鍵體驗</h2>
+          <p class="text-slate-300">
+            我們設計每一個動線，讓你從進門到離開都像完成一趟小旅行。香氣、音樂、手法節奏都依照淡水的節奏精心調整。
+          </p>
+          <ul class="space-y-4">
+            {experienceHighlights.map((item) => (
+              <li key={item.title} class="glass-panel rounded-2xl p-5">
+                <h3 class="text-xl font-semibold text-white">{item.title}</h3>
+                <p class="mt-2 text-sm text-slate-300">{item.copy}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="glass-panel flex flex-col justify-between gap-6 rounded-3xl p-8">
+          <div class="space-y-3">
+            <p class="text-sm uppercase tracking-[0.3em] text-brand-200">淡水靈感</p>
+            <h3 class="text-2xl font-semibold text-white">Golden Hour Lookbook</h3>
+            <p class="text-sm text-slate-300">
+              以淡水漁人碼頭、紅毛城的黃昏色調為靈感，推出季節限定的髮色與造型搭配，打造海風也不怕的層次線條。
+            </p>
+          </div>
+          <img
+            class="h-64 w-full rounded-2xl object-cover"
+            src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=900&q=80"
+            alt="淡水夕陽下的髮型作品"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </section> -->
+
+    <section class="section-padding bg-slate-900/60">
+      <div class="mx-auto flex max-w-6xl flex-col gap-10 lg:flex-row lg:items-center">
+        <div class="flex-1 space-y-6">
+          <p class="text-sm uppercase tracking-[0.3em] text-brand-200">Testimonials</p>
+          <h2 class="text-3xl font-semibold text-white md:text-4xl">客人怎麼說</h2>
+          <p class="text-slate-300">
+            真實回饋來自在地住民，每一次造型都從傾聽開始。
+          </p>
+        </div>
+        <div class="flex-1">
+          <TestimonialsCarousel testimonials={testimonials} client:load />
+        </div>
+      </div>
+    </section>
+
+    <!-- <section class="section-padding">
+      <div class="mx-auto max-w-6xl space-y-10">
+        <div class="glass-panel rounded-3xl p-8">
+          <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p class="text-sm uppercase tracking-[0.3em] text-brand-200">Booking</p>
+              <h2 class="mt-2 text-3xl font-semibold text-white">預約前的常見問題</h2>
+            </div>
+            <a
+              class="inline-flex items-center gap-2 rounded-full bg-brand-500 px-6 py-3 text-sm font-medium text-white shadow-brand-900/40 transition hover:bg-brand-400"
+              href="https://line.me/ti/p/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              LINE 線上諮詢
+            </a>
+          </div>
+          <div class="mt-6 space-y-4">
+            {faqs.map((faq) => (
+              <details key={faq.question} class="group rounded-2xl border border-white/10 bg-white/5 p-5">
+                <summary class="flex cursor-pointer list-none items-center justify-between text-left text-white">
+                  <span class="text-base font-semibold">{faq.question}</span>
+                  <span class="ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-brand-500/20 text-brand-100 transition group-open:rotate-45">+</span>
+                </summary>
+                <p class="mt-3 text-sm text-slate-300">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <div class="glass-panel flex flex-col items-center gap-6 rounded-3xl bg-gradient-to-r from-brand-600/30 via-brand-500/20 to-brand-700/20 p-10 text-center">
+          <p class="text-sm uppercase tracking-[0.3em] text-brand-100">Ready?</p>
+          <h2 class="text-3xl font-semibold text-white md:text-4xl">預約你的 DNA 髮型時刻</h2>
+          <p class="max-w-2xl text-slate-200">
+            線上預約留下你的髮質與生活習慣，我們會在 24 小時內回覆最適合的設計師與時段。淡水限定造型方案即日起至 5 月 31 日享 9 折。
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a
+              class="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-brand-100"
+              href="https://line.me/ti/p/" target="_blank" rel="noreferrer"
+            >
+              線上預約表單
+            </a>
+            <a
+              class="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:border-brand-200 hover:text-brand-100"
+              href="mailto:hello@dna-hair.tw"
+            >
+              hello@dna-hair.tw
+            </a>
+          </div>
+        </div>
+      </div>
+    </section> -->
+  </div>
+</MainLayout>

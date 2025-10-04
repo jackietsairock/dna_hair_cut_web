@@ -1,0 +1,130 @@
+---
+import '../styles/global.css';
+
+const {
+  title = 'DNA優質專業剪髮(淡水店)｜淡水髮廊首選',
+  description = '位於淡水正德國中對面的DNA優質專業剪髮，提供剪髮、洗髮專業服務。',
+  schema = [],
+  canonical,
+  keywords = ['平價剪髮', '淡水剪髮', '淡水專業剪髮', 'DNA優質專業剪髮'],
+  openGraph = {},
+  twitter = {},
+  robots = 'index, follow',
+  author = 'DNA優質專業剪髮(淡水店)'
+} = Astro.props;
+
+const canonicalHref =
+  typeof canonical === 'string'
+    ? canonical
+    : typeof canonical?.href === 'string'
+    ? canonical.href
+    : canonical?.toString?.();
+
+const keywordsContent = Array.isArray(keywords) ? keywords.join(', ') : keywords;
+
+const schemaNodes = Array.isArray(schema)
+  ? schema.filter(Boolean)
+  : schema
+  ? [schema]
+  : [];
+
+const ogDefaults = {
+  type: 'website',
+  locale: 'zh_TW',
+  siteName: 'DNA優質專業剪髮(淡水店)',
+  title,
+  description,
+  url: canonicalHref,
+  image: '/ogImg.jpg',
+  imageAlt: `${title} 品牌形象照`,
+  updatedTime: undefined,
+  imageWidth: 1200,
+  imageHeight: 630,
+  themeColor: '#1d235a',
+  alternateLocales: []
+};
+
+const og = { ...ogDefaults, ...openGraph };
+
+const twitterDefaults = {
+  card: 'summary_large_image',
+  title: og.title,
+  description: og.description,
+  image: og.image,
+  imageAlt: og.imageAlt,
+  url: og.url,
+  site: undefined,
+  creator: undefined
+};
+
+const twitterMeta = { ...twitterDefaults, ...twitter };
+---
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    {keywordsContent && <meta name="keywords" content={keywordsContent} />}
+    <meta name="robots" content={robots} />
+    <meta name="author" content={author} />
+    <meta name="publisher" content="DNA優質專業剪髮(淡水店)" />
+    <meta name="application-name" content="DNA優質專業剪髮(淡水店)" />
+    <meta name="apple-mobile-web-app-title" content="DNA優質專業剪髮(淡水店)" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content={og.themeColor} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {canonicalHref && <link rel="canonical" href={canonicalHref} />}
+    {og.alternateLocales?.map((locale) => (
+      <link rel="alternate" hrefLang={locale.code ?? locale} href={locale.url ?? canonicalHref ?? '#'} />
+    ))}
+    <meta property="og:type" content={og.type} />
+    <meta property="og:locale" content={og.locale} />
+    {og.siteName && <meta property="og:site_name" content={og.siteName} />}
+    <meta property="og:title" content={og.title} />
+    <meta property="og:description" content={og.description} />
+    {og.url && <meta property="og:url" content={og.url} />}
+    {og.image && <meta property="og:image" content={og.image} />}
+    {og.image && <meta property="og:image:secure_url" content={og.image} />}
+    {og.imageAlt && <meta property="og:image:alt" content={og.imageAlt} />}
+    {og.imageWidth && <meta property="og:image:width" content={og.imageWidth} />}
+    {og.imageHeight && <meta property="og:image:height" content={og.imageHeight} />}
+    {og.updatedTime && <meta property="og:updated_time" content={og.updatedTime} />}
+    <meta name="twitter:card" content={twitterMeta.card} />
+    {twitterMeta.site && <meta name="twitter:site" content={twitterMeta.site} />}
+    {twitterMeta.creator && <meta name="twitter:creator" content={twitterMeta.creator} />}
+    <meta name="twitter:title" content={twitterMeta.title} />
+    <meta name="twitter:description" content={twitterMeta.description} />
+    {twitterMeta.url && <meta name="twitter:url" content={twitterMeta.url} />}
+    {twitterMeta.image && <meta name="twitter:image" content={twitterMeta.image} />}
+    {twitterMeta.imageAlt && <meta name="twitter:image:alt" content={twitterMeta.imageAlt} />}
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;900&family=Playfair+Display:wght@500;600;700&display=swap"
+    />
+    {schemaNodes.map((entry) => (
+      <script type="application/ld+json">
+        {JSON.stringify(entry)}
+      </script>
+    ))}
+  </head>
+  <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-brand-400/30 selection:text-white">
+    <div class="min-h-screen flex flex-col overflow-hidden">
+      <main class="flex-1">
+        <slot />
+      </main>
+      <footer class="bg-slate-900/80 border-t border-slate-800/60">
+        <div class="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 text-sm md:flex-row md:items-center md:justify-between">
+          <div>
+            <p class="font-heading text-lg text-white">DNA優質專業剪髮(淡水店)</p>
+            <p class="text-slate-400">251新北市淡水區北新路98號</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-5 text-slate-400">
+            <a class="transition hover:text-brand-300" href="https://www.google.com/maps/place/dna%E5%84%AA%E8%B3%AA%E5%B0%88%E6%A5%AD%E5%89%AA%E9%AB%AE/@25.1783903,121.446838,19.63z/data=!4m15!1m8!3m7!1s0x3442afff0c715ae5:0xe24cf2364b4f66b!2zMjUx5paw5YyX5biC5reh5rC05Y2A5YyX5paw6LevOTjomZ8!3b1!8m2!3d25.1782499!4d121.4472895!16s%2Fg%2F11rr_zvn5p!3m5!1s0x3442afff0b8fc117:0xd11304f40ac8d573!8m2!3d25.178314!4d121.4472761!16s%2Fg%2F11xp34_6s_?entry=ttu&g_ep=EgoyMDI1MTAwMS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noreferrer">Google 地圖</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

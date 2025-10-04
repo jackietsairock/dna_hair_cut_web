@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans TC", "Noto Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading: "Playfair Display", "Noto Serif TC", serif;
+  --color-brand-50: #f4f6ff;
+  --color-brand-100: #e5e9ff;
+  --color-brand-200: #c9d1ff;
+  --color-brand-300: #a9b5ff;
+  --color-brand-400: #7f8cff;
+  --color-brand-500: #5763f8;
+  --color-brand-600: #404bd2;
+  --color-brand-700: #333fac;
+  --color-brand-800: #2a3386;
+  --color-brand-900: #1d235a;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-slate-950 text-slate-100 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading tracking-tight;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/6 backdrop-blur border border-white/10 shadow-xl shadow-brand-900/20;
+  }
+
+  .section-padding {
+    @apply px-6 py-16 md:px-10 lg:px-16 lg:py-24;
+  }
+}
