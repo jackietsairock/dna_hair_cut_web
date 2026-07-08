@@ -93,52 +93,23 @@ const testimonials = [
 
 const faqs = [
   {
-    question: '需要事先預約嗎？',
-    answer: '建議提前預約以保留喜歡的設計師時段，現場也提供候位服務。可透過電話或 LINE 官方帳號預約。'
+    question: 'DNA優質專業剪髮(淡水店)在哪裡？',
+    answer:
+      '地址是251新北市淡水區北新路98號，位於淡水正德國中對面，出發前可先用 Google 地圖確認路線。'
   },
   {
-    question: '店內有提供英文服務嗎？',
-    answer: '部分設計師可使用英文與日文溝通，預約時告知需求即可安排。'
+    question: '營業時間是幾點到幾點？',
+    answer: '營業時間為每日 10:00 至 21:00，建議出發前透過 Google 地圖確認當日營業狀態。'
   },
   {
-    question: '停車是否方便？',
-    answer: '可停放於淡水捷運站停車場與淡水文化園區地下停車場，步行皆在 5 分鐘內。'
+    question: '提供哪些服務？',
+    answer: '提供平價又優質的專業剪髮與洗髮服務，由資深設計師依頭型與需求打造好整理的髮型。'
+  },
+  {
+    question: '可以用哪些方式付款？',
+    answer: '目前提供現金付款。'
   }
 ];
-
-const parsePrice = (value: string) => {
-  const numeric = value.replace(/[^0-9]/g, '');
-  return numeric ? Number.parseInt(numeric, 10) : undefined;
-};
-
-const serviceSchemas = services.map((service) => {
-  const priceValue = parsePrice(service.price);
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    '@id': `${canonicalUrl.href}#service-${encodeURIComponent(service.name)}`,
-    name: service.name,
-    description: service.description,
-    serviceType: service.name,
-    provider: {
-      '@type': 'HairSalon',
-      '@id': `${canonicalUrl.href}#business`,
-      name: 'DNA優質專業剪髮(淡水店)'
-    },
-    areaServed: {
-      '@type': 'AdministrativeArea',
-      name: '新北市淡水區'
-    },
-    ...(priceValue && {
-      offers: {
-        '@type': 'Offer',
-        priceCurrency: 'TWD',
-        price: priceValue,
-        availability: 'https://schema.org/InStock'
-      }
-    })
-  };
-});
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -177,14 +148,15 @@ const businessSchema = {
   '@type': 'HairSalon',
   '@id': `${canonicalUrl.href}#business`,
   name: 'DNA優質專業剪髮(淡水店)',
-  image: [openGraphImage],
+  description: pageDescription,
+  image: [new URL(openGraphImage, siteOrigin).href],
   url: canonicalUrl.href,
-  mainEntityOfPage: canonicalUrl.href,
-  telephone: '+886-2-2635-1234',
-  priceRange: '$$',
+  priceRange: '$',
+  currenciesAccepted: 'TWD',
+  paymentAccepted: 'Cash',
   address: {
     '@type': 'PostalAddress',
-    streetAddress: '中正路 35 號 2F',
+    streetAddress: '北新路98號',
     addressLocality: '淡水區',
     addressRegion: '新北市',
     postalCode: '251',
@@ -192,61 +164,65 @@ const businessSchema = {
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: 25.1695,
-    longitude: 121.4451
+    latitude: 25.178314,
+    longitude: 121.4472761
   },
   openingHoursSpecification: [
     {
       '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'],
-      opens: '11:00',
-      closes: '20:30'
-    },
-    {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Friday', 'Saturday'],
-      opens: '10:30',
+      dayOfWeek: [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday'
+      ],
+      opens: '10:00',
       closes: '21:00'
-    },
-    {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: 'Sunday',
-      opens: '11:00',
-      closes: '19:00'
     }
   ],
-  sameAs: [
-    'https://www.facebook.com/',
-    'https://www.instagram.com/'
-  ],
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.8',
-    reviewCount: '120'
-  },
-  paymentAccepted: ['Cash', 'Credit Card', 'Line Pay', 'Apple Pay'],
   areaServed: {
     '@type': 'AdministrativeArea',
     name: '新北市淡水區'
   },
-  hasMap: 'https://www.google.com/maps?q=25.169505434897367,121.4451',
-  makesOffer: services.map((service) => ({
-    '@type': 'Offer',
-    itemOffered: {
-      '@type': 'Service',
-      name: service.name
-    }
-  })),
-  potentialAction: {
-    '@type': 'ReserveAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: 'https://line.me/ti/p/'
+  hasMap: 'https://www.google.com/maps?q=25.178314,121.4472761',
+  makesOffer: [
+    {
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: '專業剪髮' }
     },
-    result: {
-      '@type': 'Reservation',
-      name: 'DNA 優質專業剪髮預約'
+    {
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: '洗髮' }
     }
+  ]
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${siteOrigin.href}#website`,
+  url: siteOrigin.href,
+  name: 'DNA優質專業剪髮(淡水店)',
+  inLanguage: 'zh-Hant',
+  publisher: { '@id': `${canonicalUrl.href}#business` }
+};
+
+const webpageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${canonicalUrl.href}#webpage`,
+  url: canonicalUrl.href,
+  name: pageTitle,
+  description: pageDescription,
+  inLanguage: 'zh-Hant',
+  isPartOf: { '@id': `${siteOrigin.href}#website` },
+  about: { '@id': `${canonicalUrl.href}#business` },
+  primaryImageOfPage: {
+    '@type': 'ImageObject',
+    url: new URL(openGraphImage, siteOrigin).href
   }
 };
 
@@ -274,7 +250,7 @@ const twitter = {
   url: canonicalUrl.href
 };
 
-const schema = [businessSchema, faqSchema, ...serviceSchemas, breadcrumbSchema];
+const schema = [businessSchema, websiteSchema, webpageSchema, faqSchema, breadcrumbSchema];
 ---
 <MainLayout
   title={pageTitle}
@@ -326,15 +302,19 @@ const schema = [businessSchema, faqSchema, ...serviceSchemas, breadcrumbSchema];
         <div class="glass-panel relative mx-auto w-full max-w-md overflow-hidden rounded-3xl">
           <img
             src={openGraphImage}
-            alt="DNA優質專業剪髮店內造型"
+            alt="DNA優質專業剪髮(淡水店)店內造型與環境"
             class="h-[28rem] w-full object-cover brightness-[0.75]"
-            loading="lazy"
+            width="1200"
+            height="630"
+            loading="eager"
+            fetchpriority="high"
           />
         </div>
       </div>
     </header>
 
-    <section class="section-padding pt-0">
+    <section class="section-padding pt-0" aria-labelledby="highlights-heading">
+      <h2 id="highlights-heading" class="sr-only">店家特色</h2>
       <div class="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
         {highlights.map((highlight) => (
           <article class="glass-panel flex flex-col gap-4 rounded-2xl p-6" key={highlight.title}>
@@ -468,6 +448,26 @@ const schema = [businessSchema, faqSchema, ...serviceSchemas, breadcrumbSchema];
         </div>
         <div class="flex-1">
           <TestimonialsCarousel testimonials={testimonials} client:load />
+        </div>
+      </div>
+    </section>
+
+    <section class="section-padding" aria-labelledby="faq-heading">
+      <div class="mx-auto max-w-6xl">
+        <div class="glass-panel rounded-3xl p-8">
+          <p class="text-sm uppercase tracking-[0.3em] text-brand-200">FAQ</p>
+          <h2 id="faq-heading" class="mt-2 text-3xl font-semibold text-white md:text-4xl">常見問題</h2>
+          <div class="mt-6 space-y-4">
+            {faqs.map((faq) => (
+              <details class="group rounded-2xl border border-white/10 bg-white/5 p-5">
+                <summary class="flex cursor-pointer list-none items-center justify-between text-left text-white">
+                  <span class="text-base font-semibold">{faq.question}</span>
+                  <span class="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-brand-100 transition group-open:rotate-45">+</span>
+                </summary>
+                <p class="mt-3 text-sm leading-relaxed text-slate-300">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </div>
     </section>

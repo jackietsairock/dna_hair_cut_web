@@ -46,6 +46,11 @@ const ogDefaults = {
 
 const og = { ...ogDefaults, ...openGraph };
 
+const siteBase = Astro.site ?? new URL('https://dna-hair-cut-web.vercel.app');
+const toAbsoluteUrl = (path: unknown) =>
+  typeof path === 'string' && path.startsWith('/') ? new URL(path, siteBase).href : path;
+og.image = toAbsoluteUrl(og.image);
+
 const twitterDefaults = {
   card: 'summary_large_image',
   title: og.title,
@@ -76,9 +81,10 @@ const twitterMeta = { ...twitterDefaults, ...twitter };
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {canonicalHref && <link rel="canonical" href={canonicalHref} />}
-    {og.alternateLocales?.map((locale) => (
-      <link rel="alternate" hrefLang={locale.code ?? locale} href={locale.url ?? canonicalHref ?? '#'} />
+    {og.alternateLocales?.map((locale: any) => (
+      <link rel="alternate" hreflang={locale.code ?? locale} href={locale.url ?? canonicalHref ?? '#'} />
     ))}
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <meta property="og:type" content={og.type} />
     <meta property="og:locale" content={og.locale} />
     {og.siteName && <meta property="og:site_name" content={og.siteName} />}
@@ -99,14 +105,14 @@ const twitterMeta = { ...twitterDefaults, ...twitter };
     {twitterMeta.url && <meta name="twitter:url" content={twitterMeta.url} />}
     {twitterMeta.image && <meta name="twitter:image" content={twitterMeta.image} />}
     {twitterMeta.imageAlt && <meta name="twitter:image:alt" content={twitterMeta.imageAlt} />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;900&family=Playfair+Display:wght@500;600;700&display=swap"
     />
     {schemaNodes.map((entry) => (
-      <script type="application/ld+json">
-        {JSON.stringify(entry)}
-      </script>
+      <script type="application/ld+json" set:html={JSON.stringify(entry)} />
     ))}
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TC92KQB74H"></script>
@@ -127,7 +133,7 @@ const twitterMeta = { ...twitterDefaults, ...twitter };
         <div class="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 text-sm md:flex-row md:items-center md:justify-between">
           <div>
             <p class="font-heading text-lg text-white">DNA優質專業剪髮(淡水店)</p>
-            <p class="text-slate-400">251新北市淡水區北新路98號</p>
+            <address class="not-italic text-slate-400">251新北市淡水區北新路98號</address>
           </div>
           <div class="flex flex-wrap items-center gap-5 text-slate-400">
             <a class="transition hover:text-brand-300" href="https://www.google.com/maps/place/dna%E5%84%AA%E8%B3%AA%E5%B0%88%E6%A5%AD%E5%89%AA%E9%AB%AE/@25.1783903,121.446838,19.63z/data=!4m15!1m8!3m7!1s0x3442afff0c715ae5:0xe24cf2364b4f66b!2zMjUx5paw5YyX5biC5reh5rC05Y2A5YyX5paw6LevOTjomZ8!3b1!8m2!3d25.1782499!4d121.4472895!16s%2Fg%2F11rr_zvn5p!3m5!1s0x3442afff0b8fc117:0xd11304f40ac8d573!8m2!3d25.178314!4d121.4472761!16s%2Fg%2F11xp34_6s_?entry=ttu&g_ep=EgoyMDI1MTAwMS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noreferrer">Google 地圖</a>
